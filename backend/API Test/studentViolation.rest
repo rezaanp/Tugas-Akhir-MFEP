@@ -1,0 +1,43 @@
+//get all users
+### 
+GET http://localhost:5000/dashboard
+
+//get user by Id
+###
+GET http://localhost:5000/student-violation/2d6544da-8e97-48ea-883e-356668920a89
+
+//get user by UUID student
+###
+GET http://localhost:5000/all-violation/00bff0a1-6283-452b-a34f-79723df5a733
+
+###
+GET http://localhost:5000/violation-reported
+
+//create user
+###
+POST http://localhost:5000/student-violation
+Content-Type: application/json
+
+{
+    "studentName": "babi",
+    "studentKelas": "7D",
+    "studentGender": "Laki-laki", 
+    "subCriteria": "",
+    "newViolation": ""
+}
+
+//update user
+###
+PATCH http://localhost:5000/student-violation/b7c9cf2f-8c86-4b39-80fb-aaa73713fca7
+Content-Type: application/json
+
+{
+    "studentName": "sulahi",
+     "studentKelas": "9D",
+    "studentGender": "Laki-laki", 
+    "subCriteria": "Berada di luar kelas / keluar masuk kelas saat pergantian jam pelajaran atau saat jam kosong tanpa ijin petugas piket."
+}
+
+//delete user
+###
+DELETE http://localhost:5000/student-violation/75a66971-e5b9-41f2-a733-8a73d7e45ef9

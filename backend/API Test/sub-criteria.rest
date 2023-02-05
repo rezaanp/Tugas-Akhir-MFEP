@@ -1,0 +1,39 @@
+//get all users
+### 
+GET http://localhost:5000/sub-criteria
+
+//get user by UUID
+###
+GET http://localhost:5000/sub-criteria/5df9bba6-a558-4ca4-88d7-fa1fa49b2a2a
+
+//get subcriteria by criteria
+###
+GET http://localhost:5000/get-criteria/keranahan
+
+//create user
+###
+POST http://localhost:5000/sub-criteria
+Content-Type: application/json
+
+{
+    "code": "1.3", 
+    "name": "Berada di luar kelas / keluar masuk kelas saat pergantian jam pelajaran atau saat jam kosong tanpa ijin petugas piket.", 
+    "weight": "10",
+    "criteria": "hahai"
+}
+
+//update user
+###
+PATCH http://localhost:5000/sub-criteria/64530abd-c13c-402e-a59f-c13aef86794b
+Content-Type: application/json
+
+{
+    "code": "2.2", 
+    "name": "Berada di luar kelas / keluar masuk kelas saat pergantian jam pelajaran atau saat jam kosong tanpa ijin petugas piket.", 
+    "weight": "10",
+    "criteria": "ketertiban"
+}
+
+//delete user
+###
+DELETE http://localhost:5000/sub-criteria/64530abd-c13c-402e-a59f-c13aef86794b
