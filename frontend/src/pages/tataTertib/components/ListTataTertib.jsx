@@ -204,7 +204,7 @@ const styles = {
   inputWrap: "flex flex-col mt-1 mb-7 pr-10",
   inputLabel: "select-none mb-2 font-semibold text-slate-800 mb-3",
   inputValue:
-    "rounded-xl h-11 focus:ring-sky-400 ring-4 focus:outline-none px-4 bg-white ring-slate-300",
+    "rounded-xl h-11 focus:ring-sky-400 ring-4 focus:outline-none mx-1 px-4 bg-white ring-slate-300",
 };
 
 export default ListTataTertib;

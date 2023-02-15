@@ -7,7 +7,9 @@ const Header = () => {
   return (
     <div className={styles.headerWrap}>
       <h1 className={styles.titlPage}>{page}</h1>
-      <h1 className={styles.user}>Hi, {user?.name} ❤️</h1>
+      <h1 className={styles.user}>
+        Hi, {user?.name} <span className="w-10 h-10">✨</span>
+      </h1>
     </div>
   );
 };

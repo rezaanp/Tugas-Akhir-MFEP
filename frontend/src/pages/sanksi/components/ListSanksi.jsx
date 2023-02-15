@@ -92,8 +92,8 @@ const ListSanksi = () => {
               <th className={styles.tableTitle}>No.</th>
               <th className={styles.tableTitle}>Nama</th>
               <th className={styles.tableTitle}>Kategori</th>
-              <th className={styles.tableTitle}>minWeight</th>
-              <th className={styles.tableTitle}>maxWeight</th>
+              <th className={styles.tableTitle}>Bobot Min.</th>
+              <th className={styles.tableTitle}>Bobot Max.</th>
               <th className={styles.tableTitle}>Aksi</th>
             </tr>
           </thead>
