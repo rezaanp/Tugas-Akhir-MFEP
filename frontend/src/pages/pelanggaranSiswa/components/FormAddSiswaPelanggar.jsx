@@ -72,6 +72,7 @@ const FormAddSiswaPelanggar = ({ goBack, role }) => {
             name="siswa"
             id="siswa"
             autoComplete="off"
+            value={name}
             className={styles.inputValue}
             onChange={(e) => setName(e.target.value)}
             placeholder="Masukan Nama Siswa"
@@ -112,8 +113,12 @@ const FormAddSiswaPelanggar = ({ goBack, role }) => {
           required
         >
           <option hidden>Pilih Jenis Kelamin</option>
-          <option value="Laki-laki">Laki-laki</option>
-          <option value="Perempuan">Perempuan</option>
+          <option selected={name === "haya" && true} value="Laki-laki">
+            Laki-laki
+          </option>
+          <option selected={gender === "haya" && true} value="Perempuan">
+            Perempuan
+          </option>
         </select>
       </div>
       <div className={styles.inputWrap}>

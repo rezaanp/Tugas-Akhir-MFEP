@@ -179,11 +179,11 @@ const FormEditAkun = ({ goBack }) => {
         </button>
         {button ? (
           <button onClick={addData} className={styles.buttonAdd}>
-            Perbarui
+            Tambah
           </button>
         ) : (
           <button className={styles.buttonAddDisabled} disabled>
-            Perbarui
+            Tambah
           </button>
         )}
       </div>

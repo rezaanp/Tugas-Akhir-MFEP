@@ -85,34 +85,28 @@ const ListDetailPelanggaran = () => {
   };
 
   useEffect(() => {
+    //GET Total MFEP
     let totalMfep = 0;
-    if (criterias.length) {
+    if (criterias.length && listViolations.length) {
       for (const x in criterias) {
         let totalCriteria = 0;
-        if (listViolations.length) {
-          for (const y in listViolations) {
-            if (criterias[x].id === listViolations[y]?.criteriaId) {
-              totalCriteria += listViolations[y]?.subWeight;
-            }
+        for (const y in listViolations) {
+          if (criterias[x].id === listViolations[y]?.criteriaId) {
+            totalCriteria += listViolations[y]?.subWeight;
           }
-          totalMfep += totalCriteria * criterias[x]?.weight;
         }
+        totalMfep += totalCriteria * criterias[x]?.weight;
       }
+      setMfep(roundNum(totalMfep));
     }
-    setMfep(roundNum(totalMfep));
 
-    let studentPunishment;
-    if (listPunishments.length) {
-      for (const x in listPunishments) {
-        if (
-          totalMfep >= listPunishments[x]?.minWeight &&
-          totalMfep <= listPunishments[x]?.maxWeight
-        ) {
-          studentPunishment = listPunishments[x]?.name;
-        }
-      }
-    }
-    setStudentPunishment(studentPunishment ?? "Tidak Dapat Menemukan Sanksi");
+    //Get Punishment
+    if (listPunishments.length)
+      return setStudentPunishment(
+        listPunishments.find(
+          (e) => totalMfep >= e.minWeight && totalMfep <= e.maxWeight
+        )?.name ?? "Tidak Dapat Menemukan Sanksi"
+      );
   }, [criterias, listViolations, listPunishments]);
 
   useEffect(() => {

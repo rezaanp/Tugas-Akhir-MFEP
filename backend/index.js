@@ -31,6 +31,8 @@ app.use(
   })
 );
 
+//SYNC DB
+
 // (async () => {
 //   await db.sync();
 // })();

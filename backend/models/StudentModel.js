@@ -12,6 +12,13 @@ const Student = db.define(
         notEmpty: true,
       },
     },
+    nisn: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
     name: {
       type: DataTypes.STRING,
       allowNull: false,

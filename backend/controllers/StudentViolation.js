@@ -12,7 +12,7 @@ export const getStudentViolation = async (req, res) => {
         order: [["createdAt", "DESC"]],
         include: [
           {
-            attributes: ["name", "kelas", "gender"],
+            attributes: ["nisn", "name", "kelas", "gender"],
             model: Student,
           },
           {
@@ -44,7 +44,7 @@ export const getViolationByReported = async (req, res) => {
       order: [["createdAt", "DESC"]],
       include: [
         {
-          attributes: ["name", "kelas", "gender"],
+          attributes: ["nisn", "name", "kelas", "gender"],
           model: Student,
         },
         {
@@ -69,7 +69,7 @@ export const getStudentViolationById = async (req, res) => {
       const response = await StudentViolation.findOne({
         include: [
           {
-            attributes: ["name", "kelas", "gender"],
+            attributes: ["nisn", "name", "kelas", "gender"],
             model: Student,
           },
           {
@@ -140,27 +140,23 @@ export const getDetailAllViolationByStudentId = async (req, res) => {
 };
 
 export const createStudentViolation = async (req, res) => {
-  const {
-    studentName,
-    studentKelas,
-    studentGender,
-    subCriteria,
-    newViolation,
-  } = req.body;
+  const { nisn, studentName, studentKelas, studentGender, subCriteria } =
+    req.body;
 
-  let violationId;
+  let violation;
   let mistake;
 
-  violationId = await checkCriteria(subCriteria);
+  violation = await checkCriteria(subCriteria);
 
-  if (Number.isInteger(violationId)) {
+  if (Number.isInteger(violation)) {
     mistake = null;
   } else {
-    mistake = violationId;
-    violationId = null;
+    mistake = violation;
+    violation = null;
   }
 
   const studentId = await checkStudent(
+    nisn,
     studentName,
     studentKelas,
     studentGender
@@ -169,7 +165,7 @@ export const createStudentViolation = async (req, res) => {
   try {
     await StudentViolation.create({
       studentId,
-      violationId,
+      violationId: violation,
       newViolation: mistake,
       accountId: req.accountId,
     });
@@ -180,6 +176,8 @@ export const createStudentViolation = async (req, res) => {
 };
 
 export const updateStudentViolation = async (req, res) => {
+  const { nisn, studentName, studentKelas, studentGender, subCriteria } =
+    req.body;
   if (req.role === "admin") {
     try {
       const response = await StudentViolation.findOne({
@@ -193,9 +191,8 @@ export const updateStudentViolation = async (req, res) => {
           .status(404)
           .json({ msg: "Data Pelanggaran Tidak Ditemukan" });
 
-      const { studentName, studentKelas, studentGender, subCriteria } =
-        req.body;
       const studentId = await checkStudent(
+        nisn,
         studentName,
         studentKelas,
         studentGender
@@ -250,41 +247,35 @@ export const deleteStudentViolation = async (req, res) => {
 };
 
 // check student Id
-const checkStudent = async (name, kelas, gender) => {
+const checkStudent = async (nisn, name, kelas, gender) => {
   const response = await Student.findOne({
     where: {
-      name: name,
-      gender: gender,
+      nisn,
     },
   });
   if (response) {
-    if (response.kelas === kelas) {
-      return response.id;
-    } else {
-      await Student.update(
-        { name, kelas, gender },
-        {
-          where: {
-            id: response.id,
-          },
-        }
-      );
-      return response.id;
-    }
+    await Student.update(
+      { nisn, name, kelas, gender },
+      {
+        where: {
+          id: response.id,
+        },
+      }
+    );
+    return response.id;
   } else {
     await Student.create({
+      nisn,
       name,
       kelas,
       gender,
     });
-    const response = await Student.findOne({
+    const newStudent = await Student.findOne({
       where: {
-        name: name,
-        kelas: kelas,
-        gender: gender,
+        nisn,
       },
     });
-    return response.id;
+    return newStudent.id;
   }
 };
 

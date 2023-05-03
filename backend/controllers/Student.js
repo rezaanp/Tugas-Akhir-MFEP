@@ -49,10 +49,30 @@ export const getStudentById = async (req, res) => {
   }
 };
 
+export const getStudentByNISN = async (req, res) => {
+  if (req.role === "admin") {
+    try {
+      const response = await Student.findOne({
+        where: {
+          nisn: req.params.id,
+        },
+      });
+      if (!response)
+        return res.status(404).json({ msg: "Siswa Tidak Ditemukan" });
+      res.status(200).json(response);
+    } catch (error) {
+      res.status(500).json({ msg: error.message });
+    }
+  } else {
+    return res.status(500).json({ msg: "akses ditolak" });
+  }
+};
+
 export const createStudent = async (req, res) => {
-  const { name, kelas, gender } = req.body;
+  const { nisn, name, kelas, gender } = req.body;
   try {
     await Student.create({
+      nisn,
       name,
       kelas,
       gender,
@@ -75,9 +95,9 @@ export const updateStudent = async (req, res) => {
       if (!student)
         return res.status(404).json({ msg: "Siswa Tidak Ditemukan" });
 
-      const { name, kelas, gender } = req.body;
+      const { nisn, name, kelas, gender } = req.body;
       await Student.update(
-        { name, kelas, gender },
+        { nisn, name, kelas, gender },
         {
           where: {
             id: student.id,
