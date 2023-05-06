@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 
 const FormEditSiswa = ({ goBack }) => {
   const [data, setData] = useState({
+    nisn: "",
     name: "",
     kelas: "",
     gender: "",
@@ -15,6 +16,7 @@ const FormEditSiswa = ({ goBack }) => {
     const getData = async () => {
       const response = await axios.get(`http://localhost:5000/student/${id}`);
       setData({
+        nisn: response?.data?.nisn,
         name: response?.data?.name,
         kelas: response?.data?.kelas,
         gender: response?.data?.gender,
@@ -27,6 +29,7 @@ const FormEditSiswa = ({ goBack }) => {
     e.preventDefault();
     try {
       await axios.patch(`http://localhost:5000/student/${id}`, {
+        nisn: data.nisn,
         name: data.name,
         kelas: data.kelas,
         gender: data.gender,
@@ -39,6 +42,20 @@ const FormEditSiswa = ({ goBack }) => {
 
   return (
     <div className="overflow-auto h-full">
+      <div className={styles.inputWrap}>
+        <label htmlFor="name" className={styles.inputLabel}>
+          NISN
+        </label>
+        <input
+          type="text"
+          id="nisn"
+          autoComplete="off"
+          className={styles.inputValue}
+          onChange={(e) => setData({ ...data, nisn: e.target.value })}
+          placeholder="Masukan NISN Siswa"
+          value={data?.nisn && data?.nisn}
+        />
+      </div>
       <div className={styles.inputWrap}>
         <label htmlFor="name" className={styles.inputLabel}>
           Nama Siswa

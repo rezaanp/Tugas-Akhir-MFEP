@@ -96,6 +96,16 @@ export const updateStudent = async (req, res) => {
         return res.status(404).json({ msg: "Siswa Tidak Ditemukan" });
 
       const { nisn, name, kelas, gender } = req.body;
+
+      const studentByNisn = await Student.findOne({
+        where: {
+          nisn: nisn,
+        },
+      });
+
+      if (studentByNisn && student.nisn !== nisn)
+        return res.status(409).json({ msg: "Data NISN Telah Terdaftar" });
+
       await Student.update(
         { nisn, name, kelas, gender },
         {

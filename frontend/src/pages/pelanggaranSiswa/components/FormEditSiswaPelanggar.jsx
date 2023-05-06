@@ -1,8 +1,10 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { isEmpty, debounce } from "lodash";
 
 const FormEditSIswaPelanggar = ({ goBack }) => {
+  const [nisn, setNisn] = useState("");
   const [name, setName] = useState("");
   const [kelas, setKelas] = useState("");
   const [gender, setGender] = useState("");
@@ -12,6 +14,7 @@ const FormEditSIswaPelanggar = ({ goBack }) => {
   const [listCriteria, setListCriteria] = useState([]);
   const [listSubCriteria, setListSubCriteria] = useState([]);
   const [message, setMessage] = useState("");
+  const [hasGetDataByNisn, setHasGetDataByNisn] = useState(false);
   const { id } = useParams();
 
   useEffect(() => {
@@ -19,6 +22,7 @@ const FormEditSIswaPelanggar = ({ goBack }) => {
       const response = await axios.get(
         `http://localhost:5000/student-violation/${id}`
       );
+      setNisn(response?.data?.student?.nisn);
       setName(response?.data?.student?.name);
       setKelas(response?.data?.student?.kelas);
       setGender(response?.data?.student?.gender);
@@ -44,12 +48,36 @@ const FormEditSIswaPelanggar = ({ goBack }) => {
       const criteriaList = await axios.get(`http://localhost:5000/criteria`);
       setListCriteria(criteriaList?.data);
 
-      const studentList = await axios.get(`http://localhost:5000/student`);
-      setListStudent(studentList?.data);
+      const nisnList = await axios.get(`http://localhost:5000/student`);
+      setListStudent(nisnList?.data?.map((e) => e.nisn));
     };
 
     getData();
   }, [id]);
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const dataStudentByNisn = await axios.get(
+          `http://localhost:5000/student/nisn/${nisn}`
+        );
+        setHasGetDataByNisn(true);
+        setName(dataStudentByNisn?.data?.name);
+        setKelas(dataStudentByNisn?.data?.kelas);
+        setGender(dataStudentByNisn?.data?.gender);
+      } catch (error) {
+        setHasGetDataByNisn(false);
+        setName("");
+        setKelas("");
+        setGender("");
+      }
+    };
+    getData();
+  }, [nisn]);
+
+  const onChangeNisn = debounce(async (value) => {
+    setNisn(value);
+  }, 1000);
 
   const changeSubCriteria = async (val) => {
     const response = await axios.get(
@@ -64,6 +92,7 @@ const FormEditSIswaPelanggar = ({ goBack }) => {
     e.preventDefault();
     try {
       await axios.patch(`http://localhost:5000/student-violation/${id}`, {
+        nisn: nisn,
         studentName: name,
         studentKelas: kelas,
         studentGender: gender,
@@ -80,27 +109,44 @@ const FormEditSIswaPelanggar = ({ goBack }) => {
       <div className="flex flex-col md:flex-row md:gap-5 px-3 lg:px-10">
         <div className="flex flex-col mt-8 flex-1">
           <label htmlFor="siswa" className={styles.inputLabel}>
+            NISN
+          </label>
+          <input
+            list="nisnList"
+            name="nisn"
+            id="nisn"
+            className={styles.inputValue}
+            onChange={(e) => onChangeNisn(e.target.value)}
+            placeholder="Masukan NISN"
+            autoComplete="off"
+            defaultValue={nisn}
+          />
+          <datalist id="nisnList">
+            {listStudent &&
+              listStudent.map((e) => (
+                <option key={e.uuid} value={e}>
+                  {e}
+                </option>
+              ))}
+          </datalist>
+        </div>
+        <div className="flex flex-col mt-8 flex-1">
+          <label htmlFor="siswa" className={styles.inputLabel}>
             Nama Siswa Pelanggar
           </label>
           <input
-            list="students"
             name="siswa"
             id="siswa"
             className={styles.inputValue}
             onChange={(e) => setName(e.target.value)}
             placeholder="Masukan Nama Siswa"
             autoComplete="off"
-            value={name && name}
+            disabled={hasGetDataByNisn}
+            value={name}
           />
-          <datalist id="students">
-            {listStudent &&
-              listStudent.map((e) => (
-                <option key={e.uuid} value={e.name}>
-                  {e.name}
-                </option>
-              ))}
-          </datalist>
         </div>
+      </div>
+      <div className="flex flex-col md:flex-row md:gap-5 px-3 lg:px-10">
         <div className="flex flex-col mt-8 flex-1">
           <label htmlFor="kelas" className={styles.inputLabel}>
             Kelas Siswa
@@ -108,27 +154,30 @@ const FormEditSIswaPelanggar = ({ goBack }) => {
           <input
             type="text"
             id="kelas"
+            placeholder="Masukan Kelas Siswa"
             autoComplete="off"
             className={styles.inputValue}
             onChange={(e) => setKelas(e.target.value)}
-            value={kelas && kelas}
+            value={kelas}
           />
         </div>
-      </div>
-      <div className={styles.inputWrap}>
-        <label htmlFor="gender" className={styles.inputLabel}>
-          Jenis Kelamin
-        </label>
-        <select
-          name="gender"
-          id="gender"
-          className={styles.inputValue}
-          onChange={(e) => setGender(e.target.value)}
-          value={gender && gender}
-        >
-          <option value="Laki-laki">Laki-laki</option>
-          <option value="Perempuan">Perempuan</option>
-        </select>
+        <div className="flex flex-col mt-8 flex-1">
+          <label htmlFor="gender" className={styles.inputLabel}>
+            Jenis Kelamin
+          </label>
+          <select
+            name="gender"
+            id="gender"
+            className={styles.inputValue}
+            onChange={(e) => setGender(e.target.value)}
+            disabled={hasGetDataByNisn}
+            value={gender}
+          >
+            <option hidden>Pilih Kriteria</option>
+            <option value="Laki-laki">Laki-laki</option>
+            <option value="Perempuan">Perempuan</option>
+          </select>
+        </div>
       </div>
       <div className={styles.inputWrap}>
         <label htmlFor="kriteria pelanggaran" className={styles.inputLabel}>
@@ -139,7 +188,7 @@ const FormEditSIswaPelanggar = ({ goBack }) => {
           id="kriteria pelanggaran"
           className={styles.inputValue}
           onChange={(e) => changeSubCriteria(e.target.value)}
-          value={criteria && criteria}
+          value={criteria}
         >
           <option hidden>Pilih Kriteria</option>
           {listCriteria.map((e) => (
@@ -161,7 +210,7 @@ const FormEditSIswaPelanggar = ({ goBack }) => {
           onChange={(e) => setSubCriteria(e.target.value)}
           placeholder="Pilih Pelanggaran"
           autoComplete="off"
-          value={subCriteria && subCriteria}
+          value={subCriteria}
         />
         <datalist id="violations">
           {listSubCriteria &&

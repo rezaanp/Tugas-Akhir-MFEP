@@ -1,10 +1,12 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { debounce, isEmpty } from "lodash";
 
 const FormAddSiswaPelanggar = ({ goBack, role }) => {
   const navigate = useNavigate();
   const [name, setName] = useState("");
+  const [nisn, setNisn] = useState("");
   const [kelas, setKelas] = useState("");
   const [gender, setGender] = useState("");
   const [subCriteria, setSubCriteria] = useState("");
@@ -12,22 +14,38 @@ const FormAddSiswaPelanggar = ({ goBack, role }) => {
   const [listCriteria, setListCriteria] = useState([]);
   const [listSubCriteria, setListSubCriteria] = useState([]);
   const [message, setMessage] = useState("");
+  const [hasGetDataByNisn, setHasGetDataByNisn] = useState(false);
 
   useEffect(() => {
     const getData = async () => {
-      const studentList = await axios.get(`http://localhost:5000/student`);
-      let getListName = [];
-      for (const key in studentList?.data) {
-        getListName.push(studentList?.data?.[key]?.name);
-      }
-      let uniqueChars = [...new Set(getListName)];
-      setListStudent(uniqueChars);
+      const nisnList = await axios.get(`http://localhost:5000/student`);
+      setListStudent(nisnList?.data?.map((e) => e.nisn));
 
-      const response = await axios.get(`http://localhost:5000/criteria`);
-      setListCriteria(response?.data);
+      const criteriaList = await axios.get(`http://localhost:5000/criteria`);
+      setListCriteria(criteriaList?.data);
     };
     getData();
   }, []);
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const dataStudentByNisn = await axios.get(
+          `http://localhost:5000/student/nisn/${nisn}`
+        );
+        setHasGetDataByNisn(true);
+        setName(dataStudentByNisn?.data?.name);
+        setKelas(dataStudentByNisn?.data?.kelas);
+        setGender(dataStudentByNisn?.data?.gender);
+      } catch (error) {
+        setHasGetDataByNisn(false);
+        setName("");
+        setKelas("");
+        setGender("");
+      }
+    };
+    getData();
+  }, [nisn]);
 
   const changeSubCriteria = async (val) => {
     const response = await axios.get(
@@ -36,6 +54,10 @@ const FormAddSiswaPelanggar = ({ goBack, role }) => {
     setListSubCriteria(response?.data);
   };
 
+  const onChangeNisn = debounce(async (value) => {
+    setNisn(value);
+  }, 1000);
+
   const AddData = async (e) => {
     e.preventDefault();
     if (name === "" || kelas === "" || gender === "" || subCriteria === "") {
@@ -43,11 +65,11 @@ const FormAddSiswaPelanggar = ({ goBack, role }) => {
     } else {
       try {
         await axios.post(`http://localhost:5000/student-violation`, {
+          nisn: nisn,
           studentName: name,
           studentKelas: kelas,
           studentGender: gender,
           subCriteria: subCriteria,
-          newViolation: "",
         });
         if (role === "admin") {
           goBack();
@@ -64,20 +86,20 @@ const FormAddSiswaPelanggar = ({ goBack, role }) => {
     <div className="overflow-auto h-full">
       <div className="flex flex-col md:flex-row md:gap-5 px-3 lg:px-10">
         <div className="flex flex-col mt-8 flex-1">
-          <label htmlFor="siswa" className={styles.inputLabel}>
-            Nama Siswa Pelanggar
+          <label htmlFor="kelas" className={styles.inputLabel}>
+            NISN
           </label>
           <input
-            list="students"
-            name="siswa"
-            id="siswa"
+            type="text"
+            list="nisnList"
+            id="nisn"
             autoComplete="off"
-            value={name}
             className={styles.inputValue}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Masukan Nama Siswa"
+            onChange={(e) => onChangeNisn(e.target.value)}
+            required
+            placeholder="Masukan NISN"
           />
-          <datalist id="students">
+          <datalist id="nisnList">
             {listStudent &&
               listStudent.map((e, i) => (
                 <option key={i} value={e}>
@@ -87,6 +109,24 @@ const FormAddSiswaPelanggar = ({ goBack, role }) => {
           </datalist>
         </div>
         <div className="flex flex-col mt-8 flex-1">
+          <label htmlFor="siswa" className={styles.inputLabel}>
+            Nama Siswa Pelanggar
+          </label>
+          <input
+            list="students"
+            name="siswa"
+            id="siswa"
+            autoComplete="off"
+            value={name}
+            disabled={hasGetDataByNisn}
+            className={styles.inputValue}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Masukan Nama Siswa"
+          />
+        </div>
+      </div>
+      <div className="flex flex-col md:flex-row md:gap-5 px-3 lg:px-10">
+        <div className="flex flex-col mt-8 flex-1">
           <label htmlFor="kelas" className={styles.inputLabel}>
             Kelas Siswa
           </label>
@@ -95,31 +135,30 @@ const FormAddSiswaPelanggar = ({ goBack, role }) => {
             id="kelas"
             autoComplete="off"
             className={styles.inputValue}
+            value={kelas}
             onChange={(e) => setKelas(e.target.value)}
             required
             placeholder="Masukan Kelas Siswa"
           />
         </div>
-      </div>
-      <div className={styles.inputWrap}>
-        <label htmlFor="gender" className={styles.inputLabel}>
-          Jenis Kelamin
-        </label>
-        <select
-          name="gender"
-          id="gender"
-          className={styles.inputValue}
-          onChange={(e) => setGender(e.target.value)}
-          required
-        >
-          <option hidden>Pilih Jenis Kelamin</option>
-          <option selected={name === "haya" && true} value="Laki-laki">
-            Laki-laki
-          </option>
-          <option selected={gender === "haya" && true} value="Perempuan">
-            Perempuan
-          </option>
-        </select>
+        <div className="flex flex-col mt-8 flex-1">
+          <label htmlFor="gender" className={styles.inputLabel}>
+            Jenis Kelamin
+          </label>
+          <select
+            name="gender"
+            id="gender"
+            className={styles.inputValue}
+            onChange={(e) => setGender(e.target.value)}
+            disabled={hasGetDataByNisn}
+            value={gender}
+            required
+          >
+            <option hidden>Pilih Jenis Kelamin</option>
+            <option value="Laki-laki">Laki-laki</option>
+            <option value="Perempuan">Perempuan</option>
+          </select>
+        </div>
       </div>
       <div className={styles.inputWrap}>
         <label htmlFor="kriteriaPelanggaran" className={styles.inputLabel}>

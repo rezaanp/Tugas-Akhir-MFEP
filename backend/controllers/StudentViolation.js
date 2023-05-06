@@ -198,6 +198,10 @@ export const updateStudentViolation = async (req, res) => {
         studentGender
       );
       const violationId = await checkCriteria(subCriteria);
+      if (typeof violationId !== "number")
+        return res
+          .status(404)
+          .json({ msg: "Mohon Mengisi Data Pelanggaran Yang Tersedia" });
 
       await StudentViolation.update(
         {
