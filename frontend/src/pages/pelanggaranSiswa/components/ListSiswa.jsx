@@ -50,7 +50,7 @@ const ListSiswa = () => {
           <input
             type="text"
             className="border-4 focus:border-sky-500 border-slate-400 outline-none rounded-2xl px-7 h-full w-full"
-            placeholder="Cari..."
+            placeholder="Cari Berdasarkan Nama Siswa"
             onChange={(e) => setSearch(e.target.value)}
           />
           <FaSearch className="absolute right-5 top-4" color="#94a3b8" />
@@ -91,6 +91,7 @@ const ListSiswa = () => {
           <thead>
             <tr>
               <th className={styles.tableTitle}>No.</th>
+              <th className={styles.tableTitle}>NISN</th>
               <th className={styles.tableTitle}>Nama Siswa</th>
               <th className={styles.tableTitle}>Kelas</th>
               <th className={styles.tableTitle}>Jenis Kelamin</th>
@@ -122,8 +123,15 @@ const ListSiswa = () => {
                         navigate(`/detail-pelanggaran/${data?.uuid}`)
                       }
                     >
-                      {data?.name}
+                      {data?.nisn}
                     </p>
+                  </td>
+                  <td
+                    className={
+                      index % 2 === 0 ? styles.tableEven : styles.tableOdd
+                    }
+                  >
+                    {data?.name}
                   </td>
                   <td
                     className={

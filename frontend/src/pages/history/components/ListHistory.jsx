@@ -39,7 +39,7 @@ const ListHistory = () => {
           <input
             type="text"
             className="border-4 focus:border-sky-500 border-slate-400 outline-none rounded-2xl px-7 h-full w-full"
-            placeholder="Cari..."
+            placeholder="Cari Berdasarkan Nama"
             onChange={(e) => setSearch(e.target.value)}
           />
           <FaSearch className="absolute right-5 top-4" color="#94a3b8" />
@@ -52,6 +52,7 @@ const ListHistory = () => {
           <thead>
             <tr>
               <th className={styles.tableTitle}>No</th>
+              <th className={styles.tableTitle}>NISN</th>
               <th className={styles.tableTitle}>Nama Siswa</th>
               <th className={styles.tableTitle}>Kelas</th>
               <th className={styles.tableTitle}>Pelanggaran</th>
@@ -68,6 +69,13 @@ const ListHistory = () => {
                     }
                   >
                     {index + 1}
+                  </td>
+                  <td
+                    className={
+                      index % 2 === 0 ? styles.tableEven : styles.tableOdd
+                    }
+                  >
+                    {data?.student?.nisn}
                   </td>
                   <td
                     className={

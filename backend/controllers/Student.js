@@ -50,21 +50,17 @@ export const getStudentById = async (req, res) => {
 };
 
 export const getStudentByNISN = async (req, res) => {
-  if (req.role === "admin") {
-    try {
-      const response = await Student.findOne({
-        where: {
-          nisn: req.params.id,
-        },
-      });
-      if (!response)
-        return res.status(404).json({ msg: "Siswa Tidak Ditemukan" });
-      res.status(200).json(response);
-    } catch (error) {
-      res.status(500).json({ msg: error.message });
-    }
-  } else {
-    return res.status(500).json({ msg: "akses ditolak" });
+  try {
+    const response = await Student.findOne({
+      where: {
+        nisn: req.params.id,
+      },
+    });
+    if (!response)
+      return res.status(404).json({ msg: "Siswa Tidak Ditemukan" });
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(500).json({ msg: error.message });
   }
 };
 

@@ -15,6 +15,7 @@ const ListDetailPelanggaran = () => {
   const [listPunishments, setListPunishments] = useState([]);
   const [studentPunishment, setStudentPunishment] = useState("");
   const [dataProfile, setDataProfile] = useState({
+    nisn: "",
     name: "",
     kelas: "",
     gender: "",
@@ -30,6 +31,7 @@ const ListDetailPelanggaran = () => {
     const getProfileStudent = async () => {
       const response = await axios.get(`http://localhost:5000/student/${id}`);
       setDataProfile({
+        nisn: response?.data?.nisn,
         name: response?.data?.name,
         kelas: response?.data?.kelas,
         gender: response?.data?.gender,
@@ -139,6 +141,10 @@ const ListDetailPelanggaran = () => {
     <div className="overflow-auto h-full">
       <div className="flex flex-col md:flex-row md:justify-between md:items-center">
         <div className="order-2 md:order-1">
+          <h1 className="font-medium text-base">
+            NISN<span className="ml-[107px] mr-[39px]">:</span>
+            {dataProfile?.nisn.toUpperCase()}
+          </h1>
           <h1 className="font-medium text-base">
             NAMA<span className="ml-[97px] mr-[39px]">:</span>
             {dataProfile?.name.toUpperCase()}
@@ -320,6 +326,10 @@ const ListDetailPelanggaran = () => {
           </div>
           <div className="flex justify-between items-center mb-8">
             <div>
+              <h1 className="font-normal font-tmr text-sm leading-5">
+                NISN<span className="ml-[120px] mr-[8px]">:</span>
+                {dataProfile?.nisn.toUpperCase()}
+              </h1>
               <h1 className="font-normal font-tmr text-sm leading-5">
                 NAMA<span className="ml-[110px] mr-[8px]">:</span>
                 {dataProfile?.name.toUpperCase()}

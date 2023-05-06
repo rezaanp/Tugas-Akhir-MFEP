@@ -15,6 +15,7 @@ const FormEditSIswaPelanggar = ({ goBack }) => {
   const [listSubCriteria, setListSubCriteria] = useState([]);
   const [message, setMessage] = useState("");
   const [hasGetDataByNisn, setHasGetDataByNisn] = useState(false);
+  const [dataIsReady, setDataIsReady] = useState(false);
   const { id } = useParams();
 
   useEffect(() => {
@@ -50,6 +51,8 @@ const FormEditSIswaPelanggar = ({ goBack }) => {
 
       const nisnList = await axios.get(`http://localhost:5000/student`);
       setListStudent(nisnList?.data?.map((e) => e.nisn));
+
+      setDataIsReady(true);
     };
 
     getData();
@@ -104,6 +107,7 @@ const FormEditSIswaPelanggar = ({ goBack }) => {
     }
   };
 
+  if (!dataIsReady) return null;
   return (
     <div className="overflow-auto h-full">
       <div className="flex flex-col md:flex-row md:gap-5 px-3 lg:px-10">
