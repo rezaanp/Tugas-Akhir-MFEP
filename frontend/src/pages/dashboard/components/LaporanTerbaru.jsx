@@ -63,6 +63,7 @@ const LaporanTerbaru = () => {
       <table className={styles.tableWrap}>
         <thead>
           <tr>
+            <th className={styles.tableTitle}>NISN</th>
             <th className={styles.tableTitle}>Nama Siswa</th>
             <th className={styles.tableTitle}>Pelanggaran</th>
             <th className={styles.tableTitle}>Pelapor</th>
@@ -74,6 +75,13 @@ const LaporanTerbaru = () => {
           {data &&
             data.map((data, index) => (
               <tr key={data?.uuid}>
+                <td
+                  className={
+                    index % 2 === 0 ? styles.tableEven : styles.tableOdd
+                  }
+                >
+                  {data?.student?.nisn}
+                </td>
                 <td
                   className={
                     index % 2 === 0 ? styles.tableEven : styles.tableOdd

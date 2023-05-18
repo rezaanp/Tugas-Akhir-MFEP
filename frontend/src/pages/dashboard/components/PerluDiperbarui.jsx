@@ -63,6 +63,7 @@ const PerluDiperbarui = ({ getNotif }) => {
       <table className={styles.tableWrap}>
         <thead>
           <tr>
+            <th className={styles.tableTitle}>NISN</th>
             <th className={styles.tableTitle}>Nama Siswa</th>
             <th className={styles.tableTitle}>Pelanggaran Baru</th>
             <th className={styles.tableTitle}>Pelapor</th>
@@ -74,6 +75,13 @@ const PerluDiperbarui = ({ getNotif }) => {
           {data &&
             data.map((data, index) => (
               <tr key={data?.uuid}>
+                <td
+                  className={
+                    index % 2 === 0 ? styles.tableEven : styles.tableOdd
+                  }
+                >
+                  {data?.student?.nisn}
+                </td>
                 <td
                   className={
                     index % 2 === 0 ? styles.tableEven : styles.tableOdd
