@@ -1,0 +1,39 @@
+//get all users
+### 
+GET http://localhost:5000/student
+
+//get user by UUID
+###
+GET http://localhost:5000/student/df7a1413-013f-4a86-b92f-2c2ad4af705c
+
+//get user by NISN
+###
+GET http://localhost:5000/student/nisn/coba123
+
+//create user
+###
+POST http://localhost:5000/student
+Content-Type: application/json
+
+{
+    "nisn":"272",
+    "name": "reza",
+    "kelas": "8d",
+    "gender": "Laki - Laki"
+}
+
+//update user
+###
+PATCH http://localhost:5000/student/df7a1413-013f-4a86-b92f-2c2ad4af705c
+Content-Type: application/json
+
+{
+    "nisn": "coba13",
+    "name": "lujeng baru", 
+    "kelas": "7d",
+    "gender": "Perempuan"
+}
+
+//delete user
+###
+DELETE http://localhost:5000/student/12c370bc-3e0f-4b82-9ffe-2b34eb05fae5

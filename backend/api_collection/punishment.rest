@@ -1,0 +1,35 @@
+//get all users
+### 
+GET http://localhost:5000/punishment
+
+//get user by UUID
+###
+GET http://localhost:5000/punishment/d057266c-ace8-4c1e-a619-109629b2ef17
+
+//create user
+###
+POST http://localhost:5000/punishment
+Content-Type: application/json
+
+{
+    "name": "Peringatan ke I (Petugas Ketertiban)", 
+    "category": "Pelanggaran Ringan", 
+    "minWeight": "0.1",
+    "maxWeight": "10"
+}
+
+//update user
+###
+PATCH http://localhost:5000/punishment/d057266c-ace8-4c1e-a619-109629b2ef17
+Content-Type: application/json
+
+{
+    "name": "Peringatan ke II (Petugas Ketertiban)", 
+    "category": "Pelanggaran Ringan", 
+    "minWeight": "11",
+    "maxWeight": "20"
+}
+
+//delete user
+###
+DELETE http://localhost:5000/punishment/d057266c-ace8-4c1e-a619-109629b2ef17

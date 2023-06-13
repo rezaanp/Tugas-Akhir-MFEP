@@ -1,0 +1,37 @@
+//get all users
+### 
+GET http://localhost:5000/criteria
+
+//get user by UUID
+###
+GET http://localhost:5000/criteria/838c50f7-759e-4ba5-bf40-fa4e2acca587
+
+//get user by ID
+###
+GET http://localhost:5000/criteria-id/6
+
+//create user
+###
+POST http://localhost:5000/criteria
+Content-Type: application/json
+
+{
+    "code": "C2", 
+    "name": "keramahan", 
+    "weight": "0.7"
+}
+
+//update user
+###
+PATCH http://localhost:5000/criteria/44e320d0-ef4b-4e93-b888-da35599d50ac
+Content-Type: application/json
+
+{
+    "code": "C2", 
+    "name": "ketertiban dan keramahan", 
+    "weight": "0.6"
+}
+
+//delete user
+###
+DELETE http://localhost:5000/criteria/44e320d0-ef4b-4e93-b888-da35599d50ac
