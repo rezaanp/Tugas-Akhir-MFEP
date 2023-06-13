@@ -16,7 +16,11 @@ const ListSiswa = () => {
 
   useEffect(() => {
     if (search) {
-      const filtData = listStudent.filter((e) => e.name.includes(search));
+      const filtData = listStudent.filter(
+        (e) =>
+          e.name.toLowerCase().includes(search.toLocaleLowerCase()) ||
+          e.nisn.includes(search)
+      );
       setNewListStudent(filtData);
     } else {
       setNewListStudent(listStudent);
@@ -50,7 +54,7 @@ const ListSiswa = () => {
           <input
             type="text"
             className="border-4 focus:border-sky-500 border-slate-400 outline-none rounded-2xl px-7 h-full w-full"
-            placeholder="Cari Berdasarkan Nama Siswa"
+            placeholder="Cari..."
             onChange={(e) => setSearch(e.target.value)}
           />
           <FaSearch className="absolute right-5 top-4" color="#94a3b8" />

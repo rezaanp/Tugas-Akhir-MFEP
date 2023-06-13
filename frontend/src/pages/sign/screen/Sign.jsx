@@ -1,13 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Wave from "../../../assets/wave.png";
 import SMP from "../../../assets/smp23.png";
 import Login from "../components/Login";
 import Register from "../components/Register";
 import { styles } from "./style";
+import { useDispatch } from "react-redux";
+import { reset } from "../../../bootstrap/actions";
 
 const Sign = () => {
+  const dispatch = useDispatch();
   const [tab, setTab] = useState("login");
   const [hide, setHide] = useState(true);
+
+  useEffect(() => {
+    dispatch(reset());
+  }, [dispatch]);
 
   return (
     <div className={styles.container}>
