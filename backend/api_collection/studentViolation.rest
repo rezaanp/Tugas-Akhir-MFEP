@@ -1,15 +1,20 @@
-//get all users
+//get latest violation
 ### 
-GET http://localhost:5000/dashboard
+GET http://localhost:5000/latest-violation
 
-//get user by Id
+//get should Updated
+### 
+GET http://localhost:5000/should-updated?limit=9&pageIndex=1
+
+//get violation by Id
 ###
 GET http://localhost:5000/student-violation/2d6544da-8e97-48ea-883e-356668920a89
 
-//get user by UUID student
+//get violation by studentId
 ###
-GET http://localhost:5000/all-violation/00bff0a1-6283-452b-a34f-79723df5a733
+GET http://localhost:5000/all-violation/0be7907f-19fb-4df8-8591-33b9e42e4767
 
+//get violation by reported
 ###
 GET http://localhost:5000/violation-reported
 

@@ -1,8 +1,9 @@
 import Criteria from "../models/CriteriaModel.js";
+import * as Utils from "../utils/index.js";
 
 export const getCriteria = async (req, res) => {
   try {
-    const response = await Criteria.findAll({
+    const response = await Utils.Pagination(req, Criteria, "$name$", {
       attributes: ["id", "uuid", "code", "name", "weight"],
     });
     res.status(200).json(response);

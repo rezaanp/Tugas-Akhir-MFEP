@@ -1,17 +1,23 @@
 import SubCriteria from "../models/SubCriteriaModel.js";
 import Criteria from "../models/CriteriaModel.js";
+import * as Utils from "../utils/index.js";
 
 export const getSubCriteria = async (req, res) => {
   try {
-    const response = await SubCriteria.findAll({
-      attributes: ["uuid", "code", "name", "weight", "criteriaId"],
-      include: [
-        {
-          attributes: ["code", "name", "weight"],
-          model: Criteria,
-        },
-      ],
-    });
+    const response = await Utils.Pagination(
+      req,
+      SubCriteria,
+      "$sub_criteria.name$",
+      {
+        attributes: ["uuid", "code", "name", "weight", "criteriaId"],
+        include: [
+          {
+            attributes: ["code", "weight"],
+            model: Criteria,
+          },
+        ],
+      }
+    );
     res.status(200).json(response);
   } catch (error) {
     res.status(500).json({ msg: error.message });
@@ -48,16 +54,28 @@ export const getSubCriteriaByCriteria = async (req, res) => {
   try {
     const criteria = await Criteria.findOne({
       where: {
-        name: req.params.id,
+        uuid: req.params.id,
       },
     });
-    let criteriaId = criteria.id;
+    const criteriaId = criteria.id;
 
-    const response = await SubCriteria.findAll({
-      where: {
-        criteriaId,
-      },
-    });
+    const response = await Utils.Pagination(
+      req,
+      SubCriteria,
+      "$sub_criteria.name$",
+      {
+        attributes: ["code", "name", "weight"],
+        include: [
+          {
+            attributes: ["name"],
+            model: Criteria,
+          },
+        ],
+        where: {
+          criteriaId,
+        },
+      }
+    );
     if (!response)
       return res.status(404).json({ msg: "Sub Kriteria Tidak Ditemukan" });
     res.status(200).json(response);

@@ -1,31 +1,82 @@
-import StudentViolation from "../models/StudentViolationModel.js";
-import SubCriteria from "../models/SubCriteriaModel.js";
-import Student from "../models/StudentModel.js";
-import Account from "../models/AccountModels.js";
-import Criteria from "../models/CriteriaModel.js";
+import StudentViolation from "../../models/StudentViolationModel.js";
+import SubCriteria from "../../models/SubCriteriaModel.js";
+import Student from "../../models/StudentModel.js";
+import Account from "../../models/AccountModels.js";
+import Criteria from "../../models/CriteriaModel.js";
+import { Sequelize } from "sequelize";
+import db from "../../config/Database.js";
+import { QueriesDashboard, QueriesReported } from "./ManualQueris.js";
 
-export const getStudentViolation = async (req, res) => {
+export const getLatestViolation = async (req, res) => {
+  const pageIndex = parseInt(req.query.pageIndex) || 0;
+  const limit = parseInt(req.query.limit) || 10;
+  const offset = limit * pageIndex;
+
   if (req.role === "admin") {
     try {
-      const response = await StudentViolation.findAll({
-        attributes: ["uuid", "newViolation", "createdAt"],
-        order: [["createdAt", "DESC"]],
-        include: [
-          {
-            attributes: ["nisn", "name", "kelas", "gender"],
-            model: Student,
-          },
-          {
-            attributes: ["code", "name", "weight", "criteriaId"],
-            model: SubCriteria,
-          },
-          {
-            attributes: ["name"],
-            model: Account,
-          },
-        ],
-      });
-      res.status(200).json(response);
+      //GET TOTAL DATA
+      const total = await db.query(
+        QueriesDashboard("student_violation.violationId", offset, limit).total,
+        {
+          type: Sequelize.QueryTypes.SELECT,
+        }
+      );
+      //COUNT NUMBER OF PAGES
+      const numberOfPages = Math.ceil(total[0].total / limit);
+      //GET LIST DATA
+      const data = await db.query(
+        QueriesDashboard("student_violation.violationId", offset, limit).data,
+        {
+          type: Sequelize.QueryTypes.SELECT,
+        }
+      );
+      //RESULT
+      const result = await {
+        total: total[0].total,
+        pageIndex,
+        numberOfPages,
+        data,
+      };
+      res.status(200).json(result);
+    } catch (error) {
+      res.status(500).json({ msg: error.message });
+    }
+  } else {
+    return res.status(500).json({ msg: "akses ditolak" });
+  }
+};
+
+export const getShouldUpdated = async (req, res) => {
+  const pageIndex = parseInt(req.query.pageIndex) || 0;
+  const limit = parseInt(req.query.limit) || 10;
+  const offset = limit * pageIndex;
+
+  if (req.role === "admin") {
+    try {
+      //GET TOTAL DATA
+      const total = await db.query(
+        QueriesDashboard("student_violation.newViolation", offset, limit).total,
+        {
+          type: Sequelize.QueryTypes.SELECT,
+        }
+      );
+      //COUNT NUMBER OF PAGES
+      const numberOfPages = Math.ceil(total[0].total / limit);
+      //GET LIST DATA
+      const data = await db.query(
+        QueriesDashboard("student_violation.newViolation", offset, limit).data,
+        {
+          type: Sequelize.QueryTypes.SELECT,
+        }
+      );
+      //RESULT
+      const result = await {
+        total: total[0].total,
+        pageIndex,
+        numberOfPages,
+        data,
+      };
+      res.status(200).json(result);
     } catch (error) {
       res.status(500).json({ msg: error.message });
     }
@@ -35,29 +86,36 @@ export const getStudentViolation = async (req, res) => {
 };
 
 export const getViolationByReported = async (req, res) => {
+  const pageIndex = parseInt(req.query.pageIndex) || 0;
+  const limit = parseInt(req.query.limit) || 10;
+  const search = req.query.search || "";
+  const offset = limit * pageIndex;
+
   try {
-    const response = await StudentViolation.findAll({
-      attributes: ["uuid", "newViolation", "createdAt"],
-      where: {
-        accountId: req.accountId,
-      },
-      order: [["createdAt", "DESC"]],
-      include: [
-        {
-          attributes: ["nisn", "name", "kelas", "gender"],
-          model: Student,
-        },
-        {
-          attributes: ["code", "name", "weight", "criteriaId"],
-          model: SubCriteria,
-        },
-        {
-          attributes: ["name"],
-          model: Account,
-        },
-      ],
-    });
-    res.status(200).json(response);
+    //GET TOTAL DATA
+    const total = await db.query(
+      QueriesReported(req.accountId, search, offset, limit).total,
+      {
+        type: Sequelize.QueryTypes.SELECT,
+      }
+    );
+    //COUNT NUMBER OF PAGES
+    const numberOfPages = Math.ceil(total[0].total / limit);
+    //GET LIST DATA
+    const data = await db.query(
+      QueriesReported(req.accountId, search, offset, limit).data,
+      {
+        type: Sequelize.QueryTypes.SELECT,
+      }
+    );
+    //RESULT
+    const result = await {
+      total: total[0].total,
+      pageIndex,
+      numberOfPages,
+      data,
+    };
+    res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ msg: error.message });
   }

@@ -8,7 +8,7 @@ GET http://localhost:5000/sub-criteria/5df9bba6-a558-4ca4-88d7-fa1fa49b2a2a
 
 //get subcriteria by criteria
 ###
-GET http://localhost:5000/get-criteria/keranahan
+GET http://localhost:5000/get-criteria/3a4572a1-2461-4b42-adf2-0c59bcdc36ec?limit=2&pageIndex=1
 
 //create user
 ###

@@ -1,10 +1,11 @@
 import Account from "../models/AccountModels.js";
+import * as Utils from "../utils/index.js";
 import argon2 from "argon2";
 
 export const getAccount = async (req, res) => {
   if (req.role === "admin") {
     try {
-      const response = await Account.findAll({
+      const response = await Utils.Pagination(req, Account, "$name$", {
         attributes: ["id", "uuid", "name", "username", "role"],
       });
       res.status(200).json(response);

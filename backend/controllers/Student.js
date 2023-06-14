@@ -1,19 +1,14 @@
 import Student from "../models/StudentModel.js";
 import StudentViolation from "../models/StudentViolationModel.js";
 import { Sequelize } from "sequelize";
+import * as Utils from "../utils/index.js";
 
 export const getStudent = async (req, res) => {
   try {
-    const response = Student.findAll({
+    const response = await Utils.Pagination(req, Student, "$name$", {
       attributes: {
         include: [
-          [
-            Sequelize.fn(
-              "COUNT",
-              Sequelize.col("student_violations.studentId")
-            ),
-            "violation",
-          ],
+          [Sequelize.fn("COUNT", Sequelize.col("student.id")), "violation"],
         ],
       },
       include: [

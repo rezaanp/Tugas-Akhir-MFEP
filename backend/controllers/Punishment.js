@@ -1,9 +1,10 @@
 import Punishment from "../models/PunishmentModel.js";
+import * as Utils from "../utils/index.js";
 
 export const getPunishment = async (req, res) => {
   if (req.role === "admin") {
     try {
-      const response = await Punishment.findAll({
+      const response = await Utils.Pagination(req, Punishment, "$name$", {
         attributes: [
           "id",
           "uuid",

@@ -21,6 +21,7 @@ const store = new sessionStore({
 
 app.use(
   session({
+    // eslint-disable-next-line no-undef
     secret: process.env.SESS_SECRET,
     resave: false,
     saveUninitialized: true,
@@ -32,21 +33,21 @@ app.use(
 );
 
 //SYNC DB
-
 // (async () => {
 //   await db.sync();
 // })();
 // store.sync();
 
-app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
-app.use(express.json());
+app
+  .use(cors({ credentials: true, origin: "http://localhost:3000" }))
+  .use(express.json())
+  .use(AccountRoute)
+  .use(AuthRoute)
+  .use(CriteriaRoute)
+  .use(PunishmentRoute)
+  .use(StudentRoute)
+  .use(SubCriteriaRoute)
+  .use(StudentViolation);
 
-app.use(AccountRoute);
-app.use(AuthRoute);
-app.use(CriteriaRoute);
-app.use(PunishmentRoute);
-app.use(StudentRoute);
-app.use(SubCriteriaRoute);
-app.use(StudentViolation);
-
+// eslint-disable-next-line no-undef
 app.listen(process.env.APP_PORT, () => console.log("server up and running"));
