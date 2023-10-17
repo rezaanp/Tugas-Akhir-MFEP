@@ -12,11 +12,11 @@ POST http://localhost:5000/account
 Content-Type: application/json
 
 {
-    "name": "user3", 
-    "username": "lujeng", 
+    "name": "reza", 
+    "username": "reza", 
     "password": "123", 
     "confPassword": "123", 
-    "role": "user"
+    "role": "admin"
 }
 
 //update data
