@@ -1,0 +1,22 @@
+version: '3'
+services:
+  frontend:
+    image: mfep-frontend
+    ports:
+      - "80:80"
+
+  backend:
+    image: mfep-backend
+    ports:
+      - "5000:5000"
+
+  mysql:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "true"
+      MYSQL_DATABASE: mfep_db
+  
+  adminer:
+    image: adminer
+    ports:
+      - "8080:8080"

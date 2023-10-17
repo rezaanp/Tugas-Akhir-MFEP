@@ -33,12 +33,12 @@ app.use(
 
 //SYNC DB
 
-// (async () => {
-//   await db.sync();
-// })();
-// store.sync();
+(async () => {
+  await db.sync();
+})();
+store.sync();
 
-app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+app.use(cors({ credentials: true, origin: "http://localhost" }));
 app.use(express.json());
 
 app.use(AccountRoute);
